@@ -20,7 +20,7 @@ grad = zeros(size(theta));
 
 s = 0;
 for i = 1 : m
-    s = s + (-1 * y(i) * log(h_theta_function(X(i, :), theta)) ...
+    s = s + (-1 * y(i) * log(h_theta_function(X(i, :), theta)) \
         - (1 - y(i)) * log(1 - h_theta_function(X(i, :), theta)));
 end
 % caculate the sum of regularized part
@@ -35,10 +35,10 @@ J = s / m + lambda * s_theta / (2 * m);
 for i = 1 : n
     s = 0;
     for j = 1 : m
-        s = s + (h_theta_function(X(j, :), theta) - y(i)) * X(j, i);
+        s = s + ((h_theta_function(X(j, :), theta) - y(j)) * X(j, i));
     end
     if i > 1
-        s = s + lambda * theta(i);
+        s = s + (lambda * theta(i));
     end
     grad(i) = s / m;
 end

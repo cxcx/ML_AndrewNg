@@ -40,7 +40,9 @@ s = 0;
 s = sum((-y .* log(sigmoid(X_theta))) - ((1 - y) .* log(1 - sigmoid(X_theta))));
 s += (sum(theta .* theta) - theta(1) * theta(1)) * (lambda / 2);
 J = s / m;
-grad = grad(:);
 
+grad = (X' * (sigmoid(X_theta) - y) + (lambda * theta)) / m;
+grad_temp = X' * (sigmoid(X_theta) - y) / m;
+grad(1) = grad_temp(1);
 % =============================================================
 end

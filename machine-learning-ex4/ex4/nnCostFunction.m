@@ -44,7 +44,6 @@ Theta2_grad = zeros(size(Theta2));
 %
 J = 0;
 for i=1 : m
-    y 
     h_cost = costH(Theta1, Theta2, X(i, :));
     temp = 0;
     for k=1 : num_labels
@@ -58,6 +57,9 @@ for i=1 : m
     J = J + temp;
 end
 J = J / m;
+
+% add the regularization term
+J = J + ((sum(sum(Theta1 .* Theta1, 1)(1, 2:end)) + sum(sum(Theta2 .* Theta2, 1)(1, 2:end))) * lambda / (2 * m));
 
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
@@ -88,20 +90,15 @@ J = J / m;
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
-
 end
 
-
 function H = costH(Theta1, Theta2, X)
-
 a_1 = X;
 z_2 = Theta1 * a_1';
 z_2 = z_2';
 bias_z2 = ones(size(z_2, 1), 1);
-z_2 = [bias_z2, z_2]';
-a_2 = sigmoid(z_2);
+z_2 = sigmoid(z_2);
+a_2 = [bias_z2, z_2]';
 z_3 = Theta2 * a_2;
 H = sigmoid(z_3);
-
 end

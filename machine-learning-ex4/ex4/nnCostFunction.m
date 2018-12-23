@@ -44,7 +44,7 @@ Theta2_grad = zeros(size(Theta2));
 %
 J = 0;
 for i=1 : m
-    h_cost = costH(Theta1, Theta2, X(i, :));
+    [a3 z2]= Feedforward(Theta1, Theta2, X(i, :));
     temp = 0;
     for k=1 : num_labels
         if (y(i,1) == k)
@@ -52,7 +52,7 @@ for i=1 : m
         else
             y_i_k = 0;
         end
-        temp = temp + (-y_i_k * log(h_cost(k, 1)) - ((1-y_i_k) * log(1 - h_cost(k, 1))));
+        temp = temp + (-y_i_k * log(a3(k, 1)) - ((1-y_i_k) * log(1 - a3(k, 1))));
     end
     J = J + temp;
 end
@@ -86,19 +86,30 @@ J = J + ((sum(sum(Theta1 .* Theta1, 1)(1, 2:end)) + sum(sum(Theta2 .* Theta2, 1)
 
 % -------------------------------------------------------------
 
+for i = 1:m
+    [a3 z2] = Feedforward(Theta1, Theta2, X(i, :));
+    delta3 = a3 - y(i,1);
+    z2 = [1, z2];
+    delta2 = (Theta2' * delta3) .* sigmoidGradient(z2)';
+    Theta1_grad = Theta1_grad + delta2(2:end) * X(i, :);
+    Theta2_grad = Theta2_grad + delta3 * sigmoid(z2);
+end
+
+Theta1_grad = Theta1_grad / m;
+Theta2_grad = Theta2_grad / m;
 % =========================================================================
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
 end
 
-function H = costH(Theta1, Theta2, X)
-a_1 = X;
-z_2 = Theta1 * a_1';
-z_2 = z_2';
-bias_z2 = ones(size(z_2, 1), 1);
-z_2 = sigmoid(z_2);
-a_2 = [bias_z2, z_2]';
-z_3 = Theta2 * a_2;
-H = sigmoid(z_3);
+function [a3 z2]= Feedforward(Theta1, Theta2, X)
+a1 = X;
+z2 = Theta1 * a1';
+z2 = z2';
+bias_z2 = ones(size(z2, 1), 1);
+a2 = sigmoid(z2);
+a2 = [bias_z2, a2]';
+z3 = Theta2 * a2;
+a3 = sigmoid(z3);
 end

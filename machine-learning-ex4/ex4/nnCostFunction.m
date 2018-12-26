@@ -43,6 +43,8 @@ Theta2_grad = zeros(size(Theta2));
 %         computed in ex4.m
 %
 J = 0;
+
+Y = zeros(m, size(y, 2));
 for i=1 : m
     [a3 z2]= Feedforward(Theta1, Theta2, X(i, :));
     temp = 0;
@@ -53,6 +55,7 @@ for i=1 : m
             y_i_k = 0;
         end
         temp = temp + (-y_i_k * log(a3(k, 1)) - ((1-y_i_k) * log(1 - a3(k, 1))));
+        Y(i, k) = y_i_k;
     end
     J = J + temp;
 end
@@ -88,9 +91,9 @@ J = J + ((sum(sum(Theta1 .* Theta1, 1)(1, 2:end)) + sum(sum(Theta2 .* Theta2, 1)
 
 for i = 1:m
     [a3 z2] = Feedforward(Theta1, Theta2, X(i, :));
-    delta3 = a3 - y(i,1);
+    delta3 = a3 - Y(i, :)';
     z2 = [1, z2];
-    delta2 = (Theta2' * delta3) .* sigmoidGradient(z2)';
+    delta2 = (Theta2' * delta3) .* (sigmoidGradient(z2)');
     Theta1_grad = Theta1_grad + delta2(2:end) * X(i, :);
     Theta2_grad = Theta2_grad + delta3 * sigmoid(z2);
 end

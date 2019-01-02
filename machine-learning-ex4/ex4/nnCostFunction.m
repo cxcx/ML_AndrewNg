@@ -95,11 +95,14 @@ for i = 1:m
     z2 = [1, z2];
     delta2 = (Theta2' * delta3) .* (sigmoidGradient(z2)');
     Theta1_grad = Theta1_grad + delta2(2:end) * X(i, :);
-    Theta2_grad = Theta2_grad + delta3 * sigmoid(z2);
+    Theta2_grad = Theta2_grad + delta3 * [1, sigmoid(z2)(2:end)];
 end
 
-Theta1_grad = Theta1_grad / m;
-Theta2_grad = Theta2_grad / m;
+Theta1_reg  = [zeros(size(Theta1, 1), 1) Theta1(:, 2:end)];
+Theta2_reg  = [zeros(size(Theta2, 1), 1) Theta2(:, 2:end)];
+
+Theta1_grad = (Theta1_grad + (Theta1_reg * lambda)) / m;
+Theta2_grad = (Theta2_grad + (Theta2_grad * lambda))/ m;
 % =========================================================================
 
 % Unroll gradients
